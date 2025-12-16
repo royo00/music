@@ -1,4 +1,4 @@
-package com.music.contoller;
+package com.music.controller;
 
 public class UserController {
 }

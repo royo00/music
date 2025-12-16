@@ -1,2 +1,4 @@
-package com.music.mapper;public class MusicMapper {
+package com.music.mapper;
+
+public class MusicMapper {
 }

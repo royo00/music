@@ -1,2 +1,4 @@
-package com.music.exception;public class BusinessException {
+package com.music.exception;
+
+public class BusinessException {
 }

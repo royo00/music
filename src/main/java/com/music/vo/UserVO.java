@@ -1,2 +1,4 @@
-package com.music.vo;public class UserVO {
+package com.music.vo;
+
+public class UserVO {
 }

@@ -1,2 +1,4 @@
-package com.music.common;public class PageResult {
+package com.music.common;
+
+public class PageResult {
 }

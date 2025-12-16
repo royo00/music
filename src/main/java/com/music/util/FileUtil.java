@@ -1,2 +1,4 @@
-package com.music.util;public class FileUtil {
+package com.music.util;
+
+public class FileUtil {
 }

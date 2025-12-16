@@ -1,2 +1,4 @@
-package com.music.controller;public class AdminController {
+package com.music.controller;
+
+public class AdminController {
 }

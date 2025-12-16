@@ -1,2 +1,4 @@
-package com.music.service;public class UserService {
+package com.music.service;
+
+public class UserService {
 }

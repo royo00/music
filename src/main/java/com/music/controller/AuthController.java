@@ -1,2 +1,4 @@
-package com.music.controller;public class AuthController {
+package com.music.controller;
+
+public class AuthController {
 }

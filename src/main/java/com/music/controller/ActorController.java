@@ -1,2 +1,4 @@
-package com.music.controller;public class ActorController {
+package com.music.controller;
+
+public class ActorController {
 }

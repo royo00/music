@@ -1,2 +1,4 @@
-package com.music.entity;public class Music {
+package com.music.entity;
+
+public class Music {
 }

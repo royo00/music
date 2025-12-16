@@ -1,2 +1,4 @@
-package com.music.dto;public class LoginDTO {
+package com.music.dto;
+
+public class LoginDTO {
 }

@@ -1,4 +1,4 @@
-package com.music;
+package com.music.config;
 
 public class SecurityConfig {
 }

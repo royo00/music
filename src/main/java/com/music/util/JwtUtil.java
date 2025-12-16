@@ -1,2 +1,4 @@
-package com.music.util;public class JwtUtil {
+package com.music.util;
+
+public class JwtUtil {
 }

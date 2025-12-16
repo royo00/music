@@ -1,2 +1,4 @@
-package com.music.exception;public class GlobalExceptionHandler {
+package com.music.exception;
+
+public class GlobalExceptionHandler {
 }

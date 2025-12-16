@@ -1,2 +1,4 @@
-package com.music.config;public class CorsConfig {
+package com.music.config;
+
+public class CorsConfig {
 }
