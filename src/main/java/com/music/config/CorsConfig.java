@@ -13,26 +13,28 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
-class CorsConfig {
-
+public class CorsConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-// 根据需要调整 origin 列表或改为从配置文件读取
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // 使用 allowedOriginPatterns 代替 allowedOrigins
+        // 这样可以同时使用通配符和 allowCredentials
+        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+        ));
+
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-// 应用到所有路径
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
