@@ -8,7 +8,12 @@ import com.music.entity.User;
 import com.music.mapper.UserMapper;
 import com.music.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/auth")
@@ -68,6 +73,10 @@ public class AuthController {
         user.setEmail(dto.getEmail());
         user.setRole(Constants.UserRole.USER);
         user.setStatus(Constants.UserStatus.ENABLED);
+
+        LocalDateTime now = LocalDateTime.now(); // 获取当前系统时间
+        user.setCreateTime(now);
+        user.setUpdateTime(now);
 
         userMapper.insert(user);
         return Result.success();
