@@ -345,7 +345,27 @@ public class MusicService {
 
         return PageResult.of(pageInfo.getTotal(), page, size, voList);
     }
+    /**
+     * 获取音乐列表（管理员）
+     *
+     * @param page   页码
+     * @param size   每页数量
+     * @param status 状态筛选
+     * @return 分页结果
+     */
+    public PageResult<MusicVO> adminGetMusicList(Integer page, Integer size, Integer status) {
+        PageHelper.startPage(page, size);
 
+        List<Music> musicList = musicMapper.findByAdmin(status);
+        PageInfo<Music> pageInfo = new PageInfo<>(musicList);
+
+        // 转换为VO
+        List<MusicVO> voList = musicList.stream()
+                .map(music -> convertToVO(music, 0L))
+                .collect(Collectors.toList());
+
+        return PageResult.of(pageInfo.getTotal(), page, size, voList);
+    }
     /**
      * 更新音乐信息
      *
@@ -419,12 +439,15 @@ public class MusicService {
         if (music == null) {
             throw new BusinessException("音乐不存在");
         }
-
-        // 2. 权限检查
-        User user = userService.findById(userId);
-        if (!music.getUploadUserId().equals(userId) && !"admin".equals(user.getRole())) {
-            throw new BusinessException("无权删除该音乐");
+        //管理员不检查权限
+        if(userId != 0L){
+            // 2. 权限检查
+            User user = userService.findById(userId);
+            if (!music.getUploadUserId().equals(userId) && !"admin".equals(user.getRole())) {
+                throw new BusinessException("无权删除该音乐");
+            }
         }
+
 
         // 3. 删除文件
         fileService.deleteFile(music.getFilePath());

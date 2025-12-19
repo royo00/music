@@ -124,6 +124,17 @@
         </if>
         ORDER BY create_time DESC
     </select>
+    <!-- 管理员查询音乐列表 -->
+    <select id="findByAdmin" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM t_music
+        <where>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
 
     <!-- 更新播放次数 -->
     <update id="updatePlayCount">

@@ -79,6 +79,13 @@ public interface MusicMapper {
                                    @Param("status") Integer status);
 
     /**
+     * 管理员查询音乐列表
+     *
+     * @param status       状态筛选
+     * @return 音乐列表
+     */
+    List<Music> findByAdmin(@Param("status") Integer status);
+    /**
      * 更新播放次数
      *
      * @param id        音乐ID
