@@ -5,68 +5,93 @@ import com.music.common.Result;
 import com.music.dto.MusicUpdateDTO;
 import com.music.dto.MusicUploadDTO;
 import com.music.service.MusicService;
-import com.music.util.JwtUtil;
+import com.music.vo.MusicDetailVO;
 import com.music.vo.MusicVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 艺人控制器 - 处理艺人作品上传、管理等请求
+ */
+@Tag(name = "艺人管理", description = "艺人作品上传、管理接口")
 @RestController
 @RequestMapping("/actor")
+@RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('ACTOR', 'ADMIN')")
 public class ActorController {
 
     private final MusicService musicService;
-    private final JwtUtil jwtUtil;
-
-    public ActorController(MusicService musicService, JwtUtil jwtUtil) {
-        this.musicService = musicService;
-        this.jwtUtil = jwtUtil;
-    }
 
     /**
-     * 上传音乐（艺人 / 管理员）
+     * 上传音乐
      */
+    @Operation(summary = "上传音乐")
     @PostMapping("/upload")
-    public Result<Long> upload(@ModelAttribute MusicUploadDTO dto,
-                               @RequestHeader("Authorization") String authorization) {
-
-        Long userId = jwtUtil.getUserIdFromToken(jwtUtil.extractToken(authorization));
-        return Result.success(musicService.uploadMusic(dto, userId));
+    public Result<Long> uploadMusic(
+            @Valid @ModelAttribute MusicUploadDTO uploadDTO,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        Long musicId = musicService.uploadMusic(uploadDTO, userId);
+        return Result.success("上传成功，等待审核", musicId);
     }
 
     /**
-     * 获取自己上传的音乐
+     * 我的作品列表
      */
+    @Operation(summary = "获取我的作品列表")
     @GetMapping("/music")
-    public Result<PageResult<MusicVO>> myMusic(@RequestParam Integer page,
-                                               @RequestParam Integer size,
-                                               @RequestParam(required = false) Integer status,
-                                               @RequestHeader("Authorization") String authorization) {
-
-        Long userId = jwtUtil.getUserIdFromToken(jwtUtil.extractToken(authorization));
-        return Result.success(musicService.getUserMusicList(userId, page, size, status));
+    public Result<PageResult<MusicVO>> getMyMusicList(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "20") Integer size,
+            @RequestParam(required = false) Integer status,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        PageResult<MusicVO> pageResult = musicService.getUserMusicList(userId, page, size, status);
+        return Result.success(pageResult);
     }
 
     /**
-     * 更新音乐信息
+     * 获取作品详情
      */
-    @PutMapping("/{musicId}")
-    public Result<Void> update(@PathVariable Long musicId,
-                               @RequestBody MusicUpdateDTO dto,
-                               @RequestHeader("Authorization") String authorization) {
-
-        Long userId = jwtUtil.getUserIdFromToken(jwtUtil.extractToken(authorization));
-        musicService.updateMusic(musicId, dto, userId);
-        return Result.success();
+    @Operation(summary = "获取作品详情")
+    @GetMapping("/music/{musicId}")
+    public Result<MusicDetailVO> getMusicDetail(
+            @PathVariable Long musicId,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        MusicDetailVO musicDetail = musicService.getMusicDetail(musicId, userId);
+        return Result.success(musicDetail);
     }
 
     /**
-     * 删除音乐
+     * 编辑作品
      */
-    @DeleteMapping("/{musicId}")
-    public Result<Void> delete(@PathVariable Long musicId,
-                               @RequestHeader("Authorization") String authorization) {
+    @Operation(summary = "编辑作品信息")
+    @PutMapping("/music/{musicId}")
+    public Result<String> updateMusic(
+            @PathVariable Long musicId,
+            @Valid @RequestBody MusicUpdateDTO updateDTO,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        musicService.updateMusic(musicId, updateDTO, userId);
+        return Result.success("更新成功");
+    }
 
-        Long userId = jwtUtil.getUserIdFromToken(jwtUtil.extractToken(authorization));
+    /**
+     * 删除作品
+     */
+    @Operation(summary = "删除作品")
+    @DeleteMapping("/music/{musicId}")
+    public Result<String> deleteMusic(
+            @PathVariable Long musicId,
+            Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
         musicService.deleteMusic(musicId, userId);
-        return Result.success();
+        return Result.success("删除成功");
     }
 }
