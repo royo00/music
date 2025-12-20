@@ -49,13 +49,16 @@
 
     <!-- 根据用户ID查询播放历史的音乐列表 -->
     <select id="findMusicByUserId" resultMap="MusicResultMap">
-        SELECT DISTINCT m.id, m.music_name, m.artist, m.album, m.duration, m.file_uuid, m.file_path, m.file_size,
-                        m.cover_url, m.status, m.description, m.play_count, m.upload_user_id, m.remark, m.create_time, m.update_time
+        SELECT m.id, m.music_name, m.artist, m.album, m.duration, m.file_uuid, m.file_path, m.file_size,
+               m.cover_url, m.status, m.description, m.play_count, m.upload_user_id, m.remark, m.create_time, m.update_time,
+               MAX(ph.play_time) as latest_play_time
         FROM t_music m
                  INNER JOIN t_play_history ph ON m.id = ph.music_id
         WHERE ph.user_id = #{userId}
-        ORDER BY ph.play_time DESC
+        GROUP BY m.id
+        ORDER BY latest_play_time DESC
     </select>
+
 
     <!-- 统计用户播放次数 -->
     <select id="countByUserId" parameterType="long" resultType="long">
