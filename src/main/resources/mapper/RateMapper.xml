@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.music.mapper.RateMapper">
+
+    <insert id="insertOrUpdateRating">
+        INSERT INTO t_rating (user_id, music_id, score)
+        VALUES (#{userId}, #{musicId}, #{score})
+            ON DUPLICATE KEY UPDATE
+                                 score = #{score},
+                                 update_time = NOW()
+    </insert>
+
+    <select id="selectMusicStats" resultType="com.music.vo.MusicStatsVO">
+        SELECT
+            m.id as musicId,
+            m.play_count as playCount,
+            (SELECT COUNT(*) FROM t_favorite f WHERE f.music_id = m.id) as favoriteCount,
+            IFNULL(AVG(r.score), 0) as avgScore,
+            COUNT(r.id) as totalRatings
+        FROM t_music m
+                 LEFT JOIN t_rating r ON m.id = r.music_id
+        WHERE m.id = #{musicId}
+        GROUP BY m.id
+    </select>
+
+    <select id="selectArtistAverageScore" resultType="java.math.BigDecimal">
+        SELECT IFNULL(AVG(r.score), 0)
+        FROM t_rating r
+                 JOIN t_music m ON r.music_id = m.id
+        WHERE m.upload_user_id = #{artistId}
+          AND m.status = 1 -- 仅计算已发布的歌曲
+    </select>
+
+    <select id="selectMusicStatsByArtist" resultType="com.music.vo.MusicStatsVO">
+        SELECT
+            m.id as musicId,
+            m.play_count as playCount,
+            (SELECT COUNT(*) FROM t_favorite f WHERE f.music_id = m.id) as favoriteCount,
+            IFNULL(AVG(r.score), 0) as avgScore,
+            COUNT(r.id) as totalRatings
+        FROM t_music m
+                 LEFT JOIN t_rating r ON m.id = r.music_id
+        WHERE m.upload_user_id = #{artistId}
+          AND m.status = 1
+        GROUP BY m.id
+    </select>
+
+</mapper>
