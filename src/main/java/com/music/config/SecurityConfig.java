@@ -86,6 +86,8 @@ public class SecurityConfig {
                         .requestMatchers("/user/**").hasAuthority("user")
                         .requestMatchers("/actor/**").hasAuthority("actor")
                         .requestMatchers("/admin/**").hasAuthority("admin")
+                        .requestMatchers("/rate/music/**").permitAll()
+                        .requestMatchers("/rate/artist/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
