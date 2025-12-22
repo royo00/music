@@ -30,7 +30,7 @@ public class Constants {
     public static class ResponseMessage {
         public static final String SUCCESS = "操作成功";
         public static final String ERROR = "操作失败";
-        public static final String UNAUTHORIZED = "未登录或登录已过期";
+        public static final String UNAUTHORIZED = "用户不存在或登录已过期";
         public static final String FORBIDDEN = "无权限访问";
         public static final String NOT_FOUND = "资源不存在";
         public static final String BAD_REQUEST = "请求参数错误";
