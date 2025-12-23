@@ -49,4 +49,12 @@ public class RateController {
     public Result<List<MusicStatsVO>> getArtistMusicStats(@PathVariable Long artistId) {
         return Result.success(rateService.getArtistMusicStats(artistId));
     }
+
+    // 7. 获取艺人所有歌曲评分列表（通过token）
+    @GetMapping("/artist/list")
+    public Result<List<MusicStatsVO>> getArtistMusicStatsByToken(
+            @RequestHeader("Authorization") String authorization) {
+        Long artistId = jwtUtil.getUserIdFromToken(jwtUtil.extractToken(authorization));
+        return Result.success(rateService.getArtistMusicStats(artistId));
+    }
 }
